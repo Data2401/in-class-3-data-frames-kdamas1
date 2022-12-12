@@ -1,23 +1,26 @@
 ---
 title: "Dataframes - In Class lab"
-author: "Dr. Shoemaker"
+author: "Damas Kisumbuo"
 date: "DATA 2401"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyverse)
 ```
-
 
 ## Working with built-in data sets
 
-Load R's "USPersonalExpenditure" dataset using the `data()` function
+#Load R's "USPersonalExpenditure" dataset using the `data()` function
 
-This will produce a data frame called `USPersonalExpenditure`
+#This will produce a data frame called `USPersonalExpenditure`
+
 ```{r}
 data("USPersonalExpenditure")
 ```
+
 
 The variable `USPersonalExpenditure` is now accessible to you. Unfortunately, it's not a data frame (it's actually a matrix, you can find that out using) 
 
@@ -32,12 +35,15 @@ Luckily, you can pass the USPersonalExpenditure variable as an argument to the `
 Do this, storing the result in a new variable
 
 ```{r}
-US_spend <- data.frame(USPersonalExpenditure)
+US_Personal_Expenditure <- data.frame(USPersonalExpenditure)
+US_Personal_Expenditure
 ```
 
 
 What are the current column names of your dataframe?
 ```{r}
+years <- colnames(US_Personal_Expenditure)
+years
 
 ```
 
@@ -46,39 +52,45 @@ Consider: why are they so strange? (Think about whether you could use a number l
 
 What are the current row names of your dataframe?
 ```{r}
-
+Expenditures <- row.names(US_Personal_Expenditure)
+Expenditures
 ```
 
 
 Add a column "Category" to your data frame that contains the rownames
 
 ```{r}
-
+US_Personal_Expenditure$category <- c(Expenditures)
+US_Personal_Expenditure
 ```
 
 Consider how this data isn't tidy. Use the `pivot_longer()` function from last class to make the data tidy. 
 
 ```{r}
+US_Personal_Expenditure %>% 
+  pivot_longer(cols = 2:5,
+               names_to = "SECTOR",
+               values_to = "YEARS")
 
 ```
 
 
 How much money was spent on personal care in 1940?
 ```{r}
-
+USPersonalExpenditure["Personal Care", '1940']
 ```
 
 
 How much money was spent on Food and Tobacco in 1960?
 ```{r}
-
+USPersonalExpenditure["Food and Tobacco", "1960"]
 
 ```
 
 
 What was the highest expenditure category in 1960?
 ```{r}
-
+US_Personal_Expenditure$category[which.max(US_Personal_Expenditure$X1960)]
 
 ```
 
@@ -86,12 +98,19 @@ What was the highest expenditure category in 1960?
 Define a function `lowest_category` that takes in a year as a parameter, and returns the lowest spending category of that year
 ```{r}
 
+lowest_category <- function(year){
+  var_name <- paste0("X",year)
+  year_of_interest <- US_Personal_Exp[[var_name]]
+  min_index <- which.min(year_of_interest)
+  US_Personal_Exp$category[]
+}
+
 
 
 ```
 
 ```{r}
-
+US_Personal_Expenditure$category[which.min(US_Personal_Expenditure$X1960)]
 ```
 
 
@@ -99,5 +118,5 @@ Using your function, determine the lowest spending category of each year
 Hint: use the `sapply()` function to apply your function to a vector of years
 
 ```{r}
-
+# sapply(X = US_Personal_Expenditure$category, FUN = lowest_category)
 ```
